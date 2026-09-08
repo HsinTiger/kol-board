@@ -1,0 +1,212 @@
+<title>回測與改進方針</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ground:#f6f4f0; --panel:#fffefc; --edge:#ded8ce; --edge-soft:#ece7de;
+  --fg:#1c1f26; --dim:#6d7688; --faint:#9aa2b1;
+  --amber:#a9702c; --amber-soft:#f0e2cd;
+  --jade:#2f7a58; --rust:#a8422f;
+  --sans:"IBM Plex Sans","Noto Sans TC",-apple-system,sans-serif;
+  --cond:"IBM Plex Sans Condensed","Noto Sans TC",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#11141b; --panel:#171b24; --edge:#2b3140; --edge-soft:#212632;
+  --fg:#e4e6ec; --dim:#8b93a5; --faint:#666e80;
+  --amber:#d9963f; --amber-soft:#33281a;
+  --jade:#4fa87a; --rust:#cf6a52;
+}}
+:root[data-theme="dark"]{
+  --ground:#11141b; --panel:#171b24; --edge:#2b3140; --edge-soft:#212632;
+  --fg:#e4e6ec; --dim:#8b93a5; --faint:#666e80;
+  --amber:#d9963f; --amber-soft:#33281a;
+  --jade:#4fa87a; --rust:#cf6a52;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--fg);font:400 15px/1.6 var(--sans);
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 22px 96px}
+.eyebrow{font:600 11px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+h1{font:600 30px/1.15 var(--cond);margin:10px 0 6px;text-wrap:balance;letter-spacing:-.01em}
+.stamp{font:400 12px/1.5 var(--mono);color:var(--faint)}
+.verdict{margin:28px 0 34px;padding:20px 22px;background:var(--panel);
+  border:1px solid var(--edge);border-left:3px solid var(--amber);border-radius:2px}
+.verdict h2{font:600 17px/1.35 var(--cond);margin:0 0 8px}
+.verdict p{margin:0;color:var(--dim);font-size:14px;max-width:64ch}
+.verdict b{color:var(--fg);font-weight:500}
+h3{font:600 12px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);margin:40px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--edge-soft)}
+.rail{display:flex;flex-wrap:wrap;gap:26px;padding:16px 0;border-block:1px solid var(--edge-soft)}
+.rail div{min-width:88px}
+.rail .k{font:500 10px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.rail .v{font:500 21px/1.2 var(--mono);margin-top:5px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font:500 10px/1 var(--cond);letter-spacing:.09em;text-transform:uppercase;color:var(--faint);
+  text-align:left;padding:0 10px 9px;white-space:nowrap}
+td{padding:11px 10px;border-top:1px solid var(--edge-soft);vertical-align:top}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tbody tr:hover{background:var(--panel)}
+.who{font-weight:500;white-space:nowrap}
+.chip{display:inline-block;font:500 11px/1.5 var(--cond);letter-spacing:.04em;
+  padding:1px 8px;border-radius:2px;border:1px solid var(--edge);color:var(--dim);white-space:nowrap}
+.chip.pend{border-color:var(--amber);color:var(--amber);background:var(--amber-soft)}
+.chip.down{border-color:var(--rust);color:var(--rust)}
+.up{color:var(--jade)}.down{color:var(--rust)}.dim{color:var(--dim)}.faint{color:var(--faint)}
+.q{color:var(--dim);font-size:12.5px;line-height:1.5;max-width:34ch}
+.bar{display:inline-block;width:52px;height:5px;background:var(--edge-soft);
+  border-radius:1px;overflow:hidden;vertical-align:middle;margin-right:7px}
+.bar i{display:block;height:100%;background:var(--amber)}
+.hgroup{margin:20px 0 0}
+.hgroup h4{font:600 13px/1 var(--cond);letter-spacing:.06em;margin:0 0 2px;
+  display:flex;align-items:baseline;gap:10px}
+.hgroup .split{font:400 12px/1 var(--mono);color:var(--dim)}
+.note{color:var(--faint);font-size:12.5px;margin-top:14px;max-width:66ch}
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--edge-soft);
+  color:var(--faint);font-size:12.5px;max-width:66ch}
+
+/* ── CEO 判斷 ── */
+.ceorec{margin:14px 0 4px;padding:13px 16px;background:var(--panel);
+  border:1px solid var(--edge);border-left:3px solid var(--jade);border-radius:2px;
+  font-size:13.5px;color:var(--dim);max-width:none}
+.ceorec b{color:var(--fg);font-weight:500}
+.assetrow{font:600 11px/1 var(--cond);letter-spacing:.14em;color:var(--amber);
+  margin:26px 0 10px}
+.calls{display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));gap:12px}
+.call{background:var(--panel);border:1px solid var(--edge);border-radius:2px;
+  padding:15px 17px;display:flex;flex-direction:column}
+.call.stale{opacity:.45}
+.call .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.call .h{font:600 14px/1.2 var(--cond);letter-spacing:.04em}
+.call .p{font:500 22px/1 var(--mono);font-variant-numeric:tabular-nums}
+.pbar{height:4px;background:var(--edge-soft);border-radius:1px;overflow:hidden;margin:9px 0 3px}
+.pbar i{display:block;height:100%;background:var(--jade)}
+.pbar.d i{background:var(--rust)}
+.call .lv{font:400 11.5px/1.5 var(--mono);color:var(--faint);margin-top:4px}
+.call .th{font-size:13px;line-height:1.62;color:var(--dim);margin:9px 0 0;flex:1}
+.call .th b{color:var(--fg);font-weight:500}
+.call .inv{font-size:12.5px;line-height:1.55;color:var(--rust);
+  border-top:1px solid var(--edge-soft);padding-top:9px;margin-top:11px}
+.call .dv{font-size:12.5px;line-height:1.55;color:var(--dim);margin-top:9px;
+  padding-left:10px;border-left:2px solid var(--edge)}
+.call .dv b{color:var(--fg);font-weight:500}
+tr.ceorow td{background:color-mix(in srgb,var(--jade) 8%,transparent);font-weight:500}
+tr.ceorow td:first-child{box-shadow:inset 3px 0 0 var(--jade)}
+</style>
+<style>
+.act{background:var(--panel);border:1px solid var(--edge);border-radius:2px;
+  padding:14px 16px;margin-top:10px}
+.act h4{font:600 14px/1.3 var(--cond);margin:0 0 8px;display:flex;
+  justify-content:space-between;align-items:baseline;gap:10px}
+.act .meta{font:400 12px/1 var(--mono);color:var(--faint)}
+.act ul{margin:0;padding-left:0;list-style:none}
+.act li{padding:7px 0 7px 0;border-top:1px solid var(--edge-soft);font-size:13px;
+  line-height:1.62;color:var(--dim)}
+.act li:first-child{border-top:0}
+.act li b{color:var(--fg);font-weight:500}
+.tag{display:inline-block;font:500 11px/1.5 var(--cond);letter-spacing:.04em;
+  padding:0 7px;border-radius:2px;border:1px solid var(--edge);color:var(--amber);
+  background:var(--amber-soft);margin-right:8px;white-space:nowrap}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}
+.ceobox{border-left:3px solid var(--jade)}
+.lead{color:var(--dim);font-size:13.5px;max-width:70ch;margin:6px 0 0}
+</style>
+<div class="wrap">
+<div class="eyebrow">Backtest &amp; Next Period</div>
+<h1>回測與改進方針</h1>
+<div class="stamp" id="stamp"></div>
+<div class="stamp" style="margin-top:6px"><a href="index.html" style="color:var(--amber)">← 回主看板</a></div>
+
+<div class="verdict"><h2 id="vh"></h2><p id="vp"></p></div>
+
+<h3>CEO 本期結算</h3>
+<p class="lead">我的判斷跟六位走同一套規則。<b>命中率看方向對錯，Brier 罰的是機率給得對不對</b>——
+兩個一起看才知道成績是實力還是題目簡單。</p>
+<div id="ceoSettled"></div>
+<div class="act ceobox" id="ceoAct"></div>
+
+<h3>六位研究員 · 下一期怎麼用他們</h3>
+<p class="lead">每一條方針都綁一個可以查證的觸發條件（順勢率、校準、證偽率、分期限命中）。
+條件不成立就不會出現那一條——不這樣做的話，改進方針很快就會變成每期都長一樣的漂亮話。</p>
+<div class="grid2" id="acts"></div>
+
+<h3>近兩週到期紀錄</h3>
+<div class="scroll"><table id="recent"></table></div>
+
+<div class="foot" id="foot"></div>
+</div>
+<script>
+const D = {"generated_at": "2026-09-08T05:13:46+00:00", "analysts": [{"name": "区块链大队长", "channel_id": "UCob862CCAFOfJE_u0Z7wtVw", "claims_total": 138, "claims_scored": 114, "coverage_days": 67, "falsifier_rate": 0.09420289855072464, "specificity": 0.8913043478260869, "flip_rate": 0.4262295081967213, "fwd_hit": 0.24561403508771928, "trail_agree": 0.6486486486486487, "edge": -0.4030346135609294, "hit_high_conv": 0.125, "hit_low_conv": 0.2653061224489796, "calibrated": false, "by_regime": {"chop": {"n": 86, "hit": 0.22093023255813954}, "trend_down": {"n": 4, "hit": 0.5}, "trend_up": {"n": 24, "hit": 0.2916666666666667}}, "by_horizon": {"1d": {"n": 17, "hit": 0.17647058823529413}, "1m": {"n": 13, "hit": 0.5384615384615384}, "1w": {"n": 82, "hit": 0.2073170731707317}, "2w": {"n": 2, "hit": 0.5}}, "blind_baseline": 0.25591590796840347, "p_worse_than_blind": 0.4493076347475855, "p_better_than_blind": 0.634487226822225, "blind_n": 114, "blind_dropped": 0, "contra_candidate": false, "invert_note": null, "tested_up_n": 33, "tested_down_n": 9, "edge_vs_blind": -0.010301872880684182, "vs_blind": "與盲猜無法區分", "actions": [{"k": "順勢", "t": "順勢率 65%、edge -40%——他的方向大多由前 7 天走勢決定。下一期不要問他「看多看空」，要問他「什麼情況你會改變看法」，那才是他可能有的資訊。"}, {"k": "校準", "t": "高信心命中 12% 反而低於低信心 27%——語氣強度沒有資訊。下一期不要用他喊得多滿去調整部位大小。"}, {"k": "問責", "t": "證偽率 9%——他幾乎不給「什麼情況算我錯」。這種主張事後怎麼解讀都行。下一期把他的目標價當作唯一可檢驗的部分。"}, {"k": "適用區間", "t": "一個月 命中 54%（n=13），一天 只有 18%（n=17）。下一期只在 一個月 這一格參考他。"}]}, {"name": "王坦克", "channel_id": "UCKT2ks7FJQXTfq4EQ0gFPdw", "claims_total": 95, "claims_scored": 51, "coverage_days": 43, "falsifier_rate": 0.0, "specificity": 0.7789473684210526, "flip_rate": 0.3382352941176471, "fwd_hit": 0.21568627450980393, "trail_agree": 0.5652173913043478, "edge": -0.34953111679454385, "hit_high_conv": null, "hit_low_conv": 0.21568627450980393, "by_regime": {"chop": {"n": 33, "hit": 0.21212121212121213}, "trend_down": {"n": 1, "hit": 0.0}, "trend_up": {"n": 17, "hit": 0.23529411764705882}}, "by_horizon": {"1m": {"n": 31, "hit": 0.16129032258064516}, "1w": {"n": 19, "hit": 0.2631578947368421}, "2w": {"n": 1, "hit": 1.0}}, "blind_baseline": 0.35693774778780835, "p_worse_than_blind": 0.02201173827910988, "p_better_than_blind": 0.9901917003166919, "blind_n": 51, "blind_dropped": 0, "contra_candidate": false, "invert_note": "顯著差於盲猜，但樣本裡只有 3 條落在真正下跌的期間、24 條落在上漲期間——**我們沒看過他在另一個方向的行情裡表現如何**。降權可以，反向採用不行：那等於押注這段行情會延續。", "tested_up_n": 24, "tested_down_n": 3, "edge_vs_blind": -0.1412514732780044, "vs_blind": "顯著差於盲猜", "actions": [{"k": "問責", "t": "證偽率 0%——他幾乎不給「什麼情況算我錯」。這種主張事後怎麼解讀都行。下一期把他的目標價當作唯一可檢驗的部分。"}, {"k": "不要反向", "t": "顯著差於盲猜，但樣本裡只有 3 條落在真正下跌的期間、24 條落在上漲期間——**我們沒看過他在另一個方向的行情裡表現如何**。降權可以，反向採用不行：那等於押注這段行情會延續。"}]}, {"name": "Men's Talk", "channel_id": "@mens.talk.official", "claims_total": 52, "claims_scored": 38, "coverage_days": 22, "falsifier_rate": 0.057692307692307696, "specificity": 0.7692307692307693, "flip_rate": 0.3333333333333333, "fwd_hit": 0.2631578947368421, "trail_agree": 0.7407407407407407, "edge": -0.4775828460038986, "hit_high_conv": null, "hit_low_conv": 0.24324324324324326, "by_regime": {"chop": {"n": 23, "hit": 0.30434782608695654}, "trend_down": {"n": 9, "hit": 0.1111111111111111}, "trend_up": {"n": 6, "hit": 0.3333333333333333}}, "by_horizon": {"1d": {"n": 2, "hit": 0.0}, "1m": {"n": 18, "hit": 0.3333333333333333}, "1q": {"n": 2, "hit": 0.0}, "1w": {"n": 16, "hit": 0.25}}, "blind_baseline": 0.32507501823864104, "p_worse_than_blind": 0.34101177969245994, "p_better_than_blind": 0.7807839707231665, "blind_n": 36, "blind_dropped": 2, "contra_candidate": false, "invert_note": null, "tested_up_n": 18, "tested_down_n": 0, "edge_vs_blind": -0.047297240460863255, "vs_blind": "與盲猜無法區分", "actions": [{"k": "順勢", "t": "順勢率 74%、edge -48%——他的方向大多由前 7 天走勢決定。下一期不要問他「看多看空」，要問他「什麼情況你會改變看法」，那才是他可能有的資訊。"}, {"k": "問責", "t": "證偽率 6%——他幾乎不給「什麼情況算我錯」。這種主張事後怎麼解讀都行。下一期把他的目標價當作唯一可檢驗的部分。"}, {"k": "行情條件", "t": "上升趨勢 命中 33%（n=6），下降趨勢 只有 11%（n=9）。他的方法有行情條件。"}]}, {"name": "比特幣交易者 科幣託", "channel_id": "UCzTAEHQ9DAJxifHb2FCy-uA", "claims_total": 50, "claims_scored": 24, "coverage_days": 34, "falsifier_rate": 0.22, "specificity": 0.44, "flip_rate": 0.09090909090909091, "fwd_hit": 0.08333333333333333, "trail_agree": 0.7727272727272727, "edge": -0.6893939393939393, "hit_high_conv": 0.07142857142857142, "hit_low_conv": 0.1, "calibrated": false, "by_regime": {"chop": {"n": 8, "hit": 0.125}, "trend_down": {"n": 11, "hit": 0.09090909090909091}, "trend_up": {"n": 5, "hit": 0.0}}, "by_horizon": {"1m": {"n": 14, "hit": 0.14285714285714285}, "1q": {"n": 1, "hit": 0.0}, "1w": {"n": 6, "hit": 0.0}, "2w": {"n": 3, "hit": 0.0}}, "blind_baseline": 0.3589470750731356, "p_worse_than_blind": 0.0033726978585342437, "p_better_than_blind": 0.9994977718379406, "blind_n": 23, "blind_dropped": 1, "contra_candidate": false, "invert_note": "顯著差於盲猜，但樣本裡只有 1 條落在真正下跌的期間、11 條落在上漲期間——**我們沒看過他在另一個方向的行情裡表現如何**。降權可以，反向採用不行：那等於押注這段行情會延續。", "tested_up_n": 11, "tested_down_n": 1, "edge_vs_blind": -0.2719905533340052, "vs_blind": "顯著差於盲猜", "actions": [{"k": "順勢", "t": "順勢率 77%、edge -69%——他的方向大多由前 7 天走勢決定。下一期不要問他「看多看空」，要問他「什麼情況你會改變看法」，那才是他可能有的資訊。"}, {"k": "校準", "t": "高信心命中 7% 反而低於低信心 10%——語氣強度沒有資訊。下一期不要用他喊得多滿去調整部位大小。"}, {"k": "不要反向", "t": "顯著差於盲猜，但樣本裡只有 1 條落在真正下跌的期間、11 條落在上漲期間——**我們沒看過他在另一個方向的行情裡表現如何**。降權可以，反向採用不行：那等於押注這段行情會延續。"}]}, {"name": "廢熊的躺平人生", "channel_id": "@廢熊的躺平人生Crypto", "claims_total": 28, "claims_scored": 13, "coverage_days": 16, "falsifier_rate": 0.03571428571428571, "specificity": 0.8571428571428571, "flip_rate": 0.23529411764705882, "fwd_hit": 0.3076923076923077, "trail_agree": 0.7, "edge": -0.39230769230769225, "hit_high_conv": null, "hit_low_conv": 0.3333333333333333, "by_regime": {"chop": {"n": 8, "hit": 0.25}, "trend_down": {"n": 5, "hit": 0.4}}, "by_horizon": {"1m": {"n": 8, "hit": 0.25}, "1q": {"n": 1, "hit": 0.0}, "2w": {"n": 4, "hit": 0.5}}, "blind_baseline": 0.3418906257141551, "p_worse_than_blind": 0.6068929626459216, "p_better_than_blind": 0.6310860112160652, "blind_n": 12, "blind_dropped": 1, "contra_candidate": false, "invert_note": null, "tested_up_n": 6, "tested_down_n": 2, "edge_vs_blind": -0.008557292380821813, "vs_blind": "與盲猜無法區分", "actions": [{"k": "順勢", "t": "順勢率 70%、edge -39%——他的方向大多由前 7 天走勢決定。下一期不要問他「看多看空」，要問他「什麼情況你會改變看法」，那才是他可能有的資訊。"}, {"k": "問責", "t": "證偽率 4%——他幾乎不給「什麼情況算我錯」。這種主張事後怎麼解讀都行。下一期把他的目標價當作唯一可檢驗的部分。"}]}, {"name": "Blockchain Daily News", "channel_id": "@blockchaindailynews", "claims_total": 17, "claims_scored": 11, "coverage_days": 13, "falsifier_rate": 0.058823529411764705, "specificity": 0.9411764705882353, "flip_rate": 0.3, "fwd_hit": 0.18181818181818182, "trail_agree": 1.0, "edge": -0.8181818181818181, "hit_high_conv": null, "hit_low_conv": 0.2, "by_regime": {"chop": {"n": 6, "hit": 0.3333333333333333}, "trend_down": {"n": 4, "hit": 0.0}, "trend_up": {"n": 1, "hit": 0.0}}, "by_horizon": {"1m": {"n": 5, "hit": 0.2}, "1q": {"n": 1, "hit": 0.0}, "1w": {"n": 4, "hit": 0.25}, "2w": {"n": 1, "hit": 0.0}}, "blind_baseline": 0.34026412615388757, "p_worse_than_blind": 0.28317035398466917, "p_better_than_blind": 0.9038141607428669, "blind_n": 10, "blind_dropped": 1, "contra_candidate": false, "invert_note": null, "tested_up_n": 5, "tested_down_n": 3, "edge_vs_blind": -0.14026412615388756, "vs_blind": "與盲猜無法區分", "actions": [{"k": "順勢", "t": "順勢率 100%、edge -82%——他的方向大多由前 7 天走勢決定。下一期不要問他「看多看空」，要問他「什麼情況你會改變看法」，那才是他可能有的資訊。"}, {"k": "問責", "t": "證偽率 6%——他幾乎不給「什麼情況算我錯」。這種主張事後怎麼解讀都行。下一期把他的目標價當作唯一可檢驗的部分。"}]}], "ceo": {"name": "CEO（我）", "channel_id": "__ceo__", "cadence": "每日", "claims_total": 15, "claims_scored": 3, "coverage_days": 1, "falsifier_rate": 1.0, "specificity": 1.0, "is_ceo": true, "fwd_hit": 1.0, "trail_agree": null, "edge": null, "hit_high_conv": null, "hit_low_conv": 1.0, "by_horizon": {"1d": {"n": 3, "hit": 1.0}}, "by_regime": {"trend_up": {"n": 3, "hit": 1.0}}, "brier": 0.2574, "contra_candidate": false, "vs_blind": null, "blind_dropped": 0, "note_sig": "可檢定樣本 3 條（不足 8），尚無法做顯著性檢定", "actions": [{"k": "機率校準", "t": "命中 100% 看起來不錯，但 Brier 0.257 **比固定喊 0.5 的 0.250 還差**。命中率只看方向對錯，Brier 罰的是「機率給得對不對」。下一期要嘛把機率壓回接近 50%，要嘛承認我對方向沒有資訊。"}, {"k": "尚未受測", "t": "已受測期限只有 一天；一週、兩週、一個月、一季 一條都還沒到期。目前的成績**不能外推到那些期限**。"}, {"k": "難度", "t": "已結算的多是一天期限，而一天期限的「區間」本來就有八成機率會中。在最容易的那一格拿到高命中率，不是能力的證據。"}]}, "recent": [{"name": "廢熊的躺平人生", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-08-08", "resolve_at": "2026-09-07", "p0": 64962.6, "p1": 79521.68, "ret": 0.22411479836090295, "hit": 0, "tgt": 0, "mae": -0.26688279102129536}, {"name": "比特幣交易者 科幣託", "asset": "BTC", "horizon": "1m", "direction": "range", "d": "2026-08-08", "resolve_at": "2026-09-07", "p0": 64962.6, "p1": 79521.68, "ret": 0.22411479836090295, "hit": 0, "tgt": 0, "mae": null}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "range", "d": "2026-08-31", "resolve_at": "2026-09-07", "p0": 78581.29, "p1": 79521.68, "ret": 0.011967098020406632, "hit": 1, "tgt": null, "mae": null}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-31", "resolve_at": "2026-09-07", "p0": 78581.29, "p1": 79521.68, "ret": 0.011967098020406632, "hit": 0, "tgt": null, "mae": -0.029489080670475044}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1d", "direction": "up", "d": "2026-09-05", "resolve_at": "2026-09-06", "p0": 79831.75, "p1": 80341.83, "ret": 0.0063894377863444275, "hit": 0, "tgt": 1, "mae": -0.00750014875034056}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-30", "resolve_at": "2026-09-06", "p0": 77682.0, "p1": 80341.83, "ret": 0.03423997837336837, "hit": 1, "tgt": 1, "mae": -0.018253906953991917}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-29", "resolve_at": "2026-09-05", "p0": 78230.0, "p1": 79831.75, "ret": 0.020474881758916017, "hit": 0, "tgt": 1, "mae": -0.025131023903873194}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-29", "resolve_at": "2026-09-05", "p0": 78230.0, "p1": 79831.75, "ret": 0.020474881758916017, "hit": 0, "tgt": 0, "mae": -0.05202607695257574}, {"name": "比特幣交易者 科幣託", "asset": "BTC", "horizon": "2w", "direction": "down", "d": "2026-08-22", "resolve_at": "2026-09-05", "p0": 77074.93, "p1": 79831.75, "ret": 0.035768050648894614, "hit": 0, "tgt": null, "mae": -0.06779208232819682}, {"name": "王坦克", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-08-06", "resolve_at": "2026-09-05", "p0": 64323.61, "p1": 79831.75, "ret": 0.24109561014999, "hit": 0, "tgt": 0, "mae": -0.2794679900583938}, {"name": "Men's Talk", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-28", "resolve_at": "2026-09-04", "p0": 77845.87, "p1": 79660.77, "ret": 0.023314017814946495, "hit": 0, "tgt": 0, "mae": -0.020320538520540596}, {"name": "Men's Talk", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-28", "resolve_at": "2026-09-04", "p0": 77845.87, "p1": 79660.77, "ret": 0.023314017814946495, "hit": 0, "tgt": 0, "mae": -0.05721729360851134}, {"name": "Men's Talk", "asset": "ETH", "horizon": "1w", "direction": "range", "d": "2026-08-28", "resolve_at": "2026-09-04", "p0": 2442.8, "p1": 2455.85, "ret": 0.005342230227607552, "hit": 1, "tgt": 1, "mae": null}, {"name": "比特幣交易者 科幣託", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-28", "resolve_at": "2026-09-04", "p0": 77845.87, "p1": 79660.77, "ret": 0.023314017814946495, "hit": 0, "tgt": 0, "mae": -0.05721729360851134}, {"name": "Blockchain Daily News", "asset": "BTC", "horizon": "1m", "direction": "up", "d": "2026-08-05", "resolve_at": "2026-09-04", "p0": 64665.23, "p1": 79660.77, "ret": 0.23189494570729896, "hit": 1, "tgt": null, "mae": -0.03293872147365756}, {"name": "Men's Talk", "asset": "BTC", "horizon": "1m", "direction": "up", "d": "2026-08-05", "resolve_at": "2026-09-04", "p0": 64665.23, "p1": 79660.77, "ret": 0.23189494570729896, "hit": 1, "tgt": null, "mae": -0.03293872147365756}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-28", "resolve_at": "2026-09-04", "p0": 77845.87, "p1": 79660.77, "ret": 0.023314017814946495, "hit": 0, "tgt": 1, "mae": -0.020320538520540596}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "range", "d": "2026-08-28", "resolve_at": "2026-09-04", "p0": 77845.87, "p1": 79660.77, "ret": 0.023314017814946495, "hit": 1, "tgt": 1, "mae": null}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-28", "resolve_at": "2026-09-04", "p0": 77845.87, "p1": 79660.77, "ret": 0.023314017814946495, "hit": 0, "tgt": null, "mae": -0.05721729360851134}, {"name": "廢熊的躺平人生", "asset": "BTC", "horizon": "1q", "direction": "down", "d": "2026-06-06", "resolve_at": "2026-09-04", "p0": 60884.62, "p1": 79660.77, "ret": 0.3083890480058839, "hit": 0, "tgt": 0, "mae": -0.35173710536421177}, {"name": "Men's Talk", "asset": "BTC", "horizon": "1q", "direction": "down", "d": "2026-06-05", "resolve_at": "2026-09-03", "p0": 61056.47, "p1": 81270.37, "ret": 0.33106892684755596, "hit": 0, "tgt": 1, "mae": -0.34793249593368236}, {"name": "Men's Talk", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-26", "resolve_at": "2026-09-02", "p0": 79023.75, "p1": 77340.01, "ret": -0.02130675904395837, "hit": 0, "tgt": null, "mae": -0.034923045287018145}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-26", "resolve_at": "2026-09-02", "p0": 79023.75, "p1": 77340.01, "ret": -0.02130675904395837, "hit": 0, "tgt": 0, "mae": -0.034923045287018145}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-26", "resolve_at": "2026-09-02", "p0": 79023.75, "p1": 77340.01, "ret": -0.02130675904395837, "hit": 0, "tgt": null, "mae": -0.034923045287018145}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-26", "resolve_at": "2026-09-02", "p0": 79023.75, "p1": 77340.01, "ret": -0.02130675904395837, "hit": 0, "tgt": 0, "mae": -0.034923045287018145}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "range", "d": "2026-08-26", "resolve_at": "2026-09-02", "p0": 79023.75, "p1": 77340.01, "ret": -0.02130675904395837, "hit": 1, "tgt": 1, "mae": null}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1m", "direction": "up", "d": "2026-08-03", "resolve_at": "2026-09-02", "p0": 63520.0, "p1": 77340.01, "ret": 0.217569426952141, "hit": 1, "tgt": null, "mae": -0.015503148614609604}, {"name": "区块链大队长", "asset": "ETH", "horizon": "1m", "direction": "down", "d": "2026-08-03", "resolve_at": "2026-09-02", "p0": 1860.5, "p1": 2391.92, "ret": 0.28563289438323036, "hit": 0, "tgt": 0, "mae": -0.3794840096748187}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-25", "resolve_at": "2026-09-01", "p0": 78539.14, "p1": 77439.0, "ret": -0.014007538152314876, "hit": 0, "tgt": 1, "mae": -0.03743012719517932}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-25", "resolve_at": "2026-09-01", "p0": 78539.14, "p1": 77439.0, "ret": -0.014007538152314876, "hit": 0, "tgt": null, "mae": -0.02698196084143523}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-25", "resolve_at": "2026-09-01", "p0": 78539.14, "p1": 77439.0, "ret": -0.014007538152314876, "hit": 0, "tgt": null, "mae": -0.02698196084143523}, {"name": "王坦克", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-25", "resolve_at": "2026-09-01", "p0": 78539.14, "p1": 77439.0, "ret": -0.014007538152314876, "hit": 0, "tgt": 1, "mae": -0.02698196084143523}, {"name": "比特幣交易者 科幣託", "asset": "BTC", "horizon": "1q", "direction": "down", "d": "2026-06-03", "resolve_at": "2026-09-01", "p0": 64142.75, "p1": 77439.0, "ret": 0.20729154892797705, "hit": 0, "tgt": 0, "mae": -0.27027403720607546}, {"name": "Blockchain Daily News", "asset": "BTC", "horizon": "1q", "direction": "down", "d": "2026-06-03", "resolve_at": "2026-09-01", "p0": 64142.75, "p1": 77439.0, "ret": 0.20729154892797705, "hit": 0, "tgt": 1, "mae": -0.27027403720607546}, {"name": "Men's Talk", "asset": "BTC", "horizon": "1q", "direction": "range", "d": "2026-06-03", "resolve_at": "2026-09-01", "p0": 64142.75, "p1": 77439.0, "ret": 0.20729154892797705, "hit": 0, "tgt": 1, "mae": null}, {"name": "比特幣交易者 科幣託", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-24", "resolve_at": "2026-08-31", "p0": 78992.75, "p1": 78581.29, "ret": -0.005208832456143208, "hit": 0, "tgt": 0, "mae": -0.026644850318541892}, {"name": "廢熊的躺平人生", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-08-01", "resolve_at": "2026-08-31", "p0": 62823.64, "p1": 78581.29, "ret": 0.2508235753292868, "hit": 0, "tgt": 0, "mae": -0.29694602222984845}, {"name": "廢熊的躺平人生", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-08-01", "resolve_at": "2026-08-31", "p0": 62823.64, "p1": 78581.29, "ret": 0.2508235753292868, "hit": 0, "tgt": 0, "mae": -0.29694602222984845}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-24", "resolve_at": "2026-08-31", "p0": 78992.75, "p1": 78581.29, "ret": -0.005208832456143208, "hit": 0, "tgt": 1, "mae": -0.03147276174079261}, {"name": "王坦克", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-07-31", "resolve_at": "2026-08-30", "p0": 62887.88, "p1": 77682.0, "ret": 0.23524596472325038, "hit": 0, "tgt": 0, "mae": -0.29562119123748487}, {"name": "王坦克", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-07-31", "resolve_at": "2026-08-30", "p0": 62887.88, "p1": 77682.0, "ret": 0.23524596472325038, "hit": 0, "tgt": 0, "mae": -0.29562119123748487}, {"name": "区块链大队长", "asset": "ETH", "horizon": "1w", "direction": "down", "d": "2026-08-22", "resolve_at": "2026-08-29", "p0": 2422.6, "p1": 2457.67, "ret": 0.014476182613720865, "hit": 0, "tgt": 0, "mae": -0.05941137620738062}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-22", "resolve_at": "2026-08-29", "p0": 77074.93, "p1": 78230.0, "ret": 0.01498632564440872, "hit": 0, "tgt": null, "mae": -0.05713842360933708}, {"name": "比特幣交易者 科幣託", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-22", "resolve_at": "2026-08-29", "p0": 77074.93, "p1": 78230.0, "ret": 0.01498632564440872, "hit": 0, "tgt": 0, "mae": -0.01984121166246917}, {"name": "比特幣交易者 科幣託", "asset": "ETH", "horizon": "1m", "direction": "up", "d": "2026-07-30", "resolve_at": "2026-08-29", "p0": 1918.31, "p1": 2457.67, "ret": 0.28116414969426223, "hit": 1, "tgt": null, "mae": -0.05017437223389338}, {"name": "王坦克", "asset": "BTC", "horizon": "1m", "direction": "up", "d": "2026-07-30", "resolve_at": "2026-08-29", "p0": 64780.02, "p1": 78230.0, "ret": 0.20762543759634536, "hit": 1, "tgt": null, "mae": -0.03866963918813234}, {"name": "王坦克", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-07-30", "resolve_at": "2026-08-29", "p0": 64780.02, "p1": 78230.0, "ret": 0.20762543759634536, "hit": 0, "tgt": 0, "mae": -0.25777778395252116}, {"name": "区块链大队长", "asset": "ETH", "horizon": "1w", "direction": "up", "d": "2026-08-21", "resolve_at": "2026-08-28", "p0": 2516.3, "p1": 2442.8, "ret": -0.029209553709812024, "hit": 0, "tgt": 0, "mae": -0.06381989428923425}, {"name": "Men's Talk", "asset": "BTC", "horizon": "1m", "direction": "up", "d": "2026-07-29", "resolve_at": "2026-08-28", "p0": 63984.28, "p1": 77845.87, "ret": 0.21664055608658872, "hit": 1, "tgt": null, "mae": -0.02671406164139065}, {"name": "王坦克", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-07-29", "resolve_at": "2026-08-28", "p0": 63984.28, "p1": 77845.87, "ret": 0.21664055608658872, "hit": 0, "tgt": null, "mae": -0.27342012756883405}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "up", "d": "2026-08-20", "resolve_at": "2026-08-27", "p0": 73025.15, "p1": 80249.58, "ret": 0.09893071085783471, "hit": 1, "tgt": 1, "mae": 2.560761600640184e-05}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-19", "resolve_at": "2026-08-26", "p0": 69334.79, "p1": 79023.75, "ret": 0.13974167946567673, "hit": 0, "tgt": 0, "mae": -0.17217662301998754}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1m", "direction": "up", "d": "2026-07-27", "resolve_at": "2026-08-26", "p0": 63755.86, "p1": 79023.75, "ret": 0.23947430087210805, "hit": 1, "tgt": 1, "mae": -0.023227041404507768}, {"name": "王坦克", "asset": "BTC", "horizon": "1m", "direction": "down", "d": "2026-07-27", "resolve_at": "2026-08-26", "p0": 63755.86, "p1": 79023.75, "ret": 0.23947430087210805, "hit": 0, "tgt": 0, "mae": -0.27474745066571127}, {"name": "王坦克", "asset": "BTC", "horizon": "1m", "direction": "up", "d": "2026-07-27", "resolve_at": "2026-08-26", "p0": 63755.86, "p1": 79023.75, "ret": 0.23947430087210805, "hit": 1, "tgt": null, "mae": -0.023227041404507768}, {"name": "区块链大队长", "asset": "BTC", "horizon": "1w", "direction": "down", "d": "2026-08-18", "resolve_at": "2026-08-25", "p0": 64725.42, "p1": 78539.14, "ret": 0.21342032234012542, "hit": 0, "tgt": null, "mae": -0.25565226150714815}], "ceo_settled": [{"asset": "ALT", "horizon": "1d", "stance": "range", "prob_up": 0.53, "made_at": "2026-09-07T09:26:40+00:00", "resolve_at": "2026-09-08", "p0": 472.5712758295759, "p1": 473.6948928943046, "ret": 0.0023776668667731663, "hit": 1, "brier": 0.22089999999999999, "thesis": "沒有觀點。山寨指數單日漲跌超過 3% 的機率各只有 7% 和 5%，橫住 88%。跟 BTC 一樣，這個期限上喊方向是擲骰子。我不下注。", "invalidation": "單日收盤跌破 439B 或明確站上 473B 之上並守住。"}, {"asset": "ETH", "horizon": "1d", "stance": "range", "prob_up": 0.53, "made_at": "2026-09-07T03:35:18+00:00", "resolve_at": "2026-09-08", "p0": 2514.58, "p1": 2480.46, "ret": -0.013568866371322404, "hit": 1, "brier": 0.28090000000000004, "thesis": "沒有觀點，但 ETH 的一天比 BTC 值得留意一點：ETH 單日振幅超過 3% 的歷史機率是 27%（BTC 只有 12%），橫住的機率 73%。也就是說在同一個期限上，ETH 給你的是「更容易被洗」而不是「更容易賺」。我不下注。", "invalidation": "單日收盤跌破 2,356 或站上 2,567，箱體結束，這條要改寫。"}, {"asset": "BTC", "horizon": "1d", "stance": "range", "prob_up": 0.52, "made_at": "2026-09-07T03:16:18+00:00", "resolve_at": "2026-09-08", "p0": 79937.37, "p1": 78692.62, "ret": -0.01557156558941081, "hit": 1, "brier": 0.27040000000000003, "thesis": "沒有觀點。BTC 單日漲跌超過 3% 的歷史機率各只有 6%，橫住的機率 88%——在這個期限上喊方向不是判斷，是擲骰子。我不下注。", "invalidation": "單日收盤跌破 76,264 或站上 82,300，代表 16 天的箱體結束，這條「沒有觀點」就要改寫。"}], "ceo_pending": [["2026-09-14", 3], ["2026-09-21", 3], ["2026-10-07", 3], ["2026-12-06", 3]], "blind": {"ALT|1d": {"up": 0.08791208791208792, "down": 0.0989010989010989, "range": 0.8131868131868132, "eff_n": 364.0}, "ALT|1w": {"up": 0.24022346368715083, "down": 0.31564245810055863, "range": 0.4441340782122905, "eff_n": 51.142857142857146}, "ALT|2w": {"up": 0.2621082621082621, "down": 0.4415954415954416, "range": 0.2962962962962963, "eff_n": 25.071428571428573}, "ALT|1m": {"up": 0.23880597014925373, "down": 0.4835820895522388, "range": 0.27761194029850744, "eff_n": 11.166666666666666}, "ALT|1q": {"up": 0.14545454545454545, "down": 0.8218181818181818, "range": 0.03272727272727273, "eff_n": 3.0555555555555554}, "BTC|1d": {"up": 0.05707196029776675, "down": 0.062034739454094295, "range": 0.8808933002481389, "eff_n": 403.0}, "BTC|1w": {"up": 0.24937027707808565, "down": 0.29219143576826195, "range": 0.45843828715365237, "eff_n": 56.714285714285715}, "BTC|2w": {"up": 0.28974358974358977, "down": 0.35384615384615387, "range": 0.3564102564102564, "eff_n": 27.857142857142858}, "BTC|1m": {"up": 0.2994652406417112, "down": 0.4144385026737968, "range": 0.28609625668449196, "eff_n": 12.466666666666667}, "BTC|1q": {"up": 0.14331210191082802, "down": 0.8343949044585988, "range": 0.022292993630573247, "eff_n": 3.488888888888889}, "ETH|1d": {"up": 0.13399503722084366, "down": 0.13895781637717122, "range": 0.7270471464019851, "eff_n": 403.0}, "ETH|1w": {"up": 0.30730478589420657, "down": 0.32997481108312343, "range": 0.36272040302267, "eff_n": 56.714285714285715}, "ETH|2w": {"up": 0.3487179487179487, "down": 0.3974358974358974, "range": 0.25384615384615383, "eff_n": 27.857142857142858}, "ETH|1m": {"up": 0.39572192513368987, "down": 0.4625668449197861, "range": 0.14171122994652408, "eff_n": 12.466666666666667}, "ETH|1q": {"up": 0.15605095541401273, "down": 0.8184713375796179, "range": 0.025477707006369428, "eff_n": 3.488888888888889}}};
+const $ = i => document.getElementById(i);
+const esc = t => String(t??'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const md = t => esc(t).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+const pc = (v,d=0) => v==null ? '<span class="faint">—</span>' : (v*100).toFixed(d)+'%';
+const sg = v => v==null ? '<span class="faint">—</span>'
+  : `<span class="${v>0?'up':v<0?'down':''}">${v>0?'+':''}${(v*100).toFixed(1)}%</span>`;
+const num = v => v==null ? '—' : v.toLocaleString(undefined,{maximumFractionDigits:0});
+const HL = {'1d':'一天','1w':'一週','2w':'兩週','1m':'一個月','1q':'一季'};
+
+$('stamp').textContent = '產生於 ' + D.generated_at + ' UTC';
+
+const ceo = D.ceo||{}, ns = (D.ceo_settled||[]).length;
+$('vh').textContent = ns ? `CEO 已結算 ${ns} 條，六位研究員已到期 ` +
+    D.analysts.reduce((a,x)=>a+(x.claims_scored||0),0) + ' 條'
+  : 'CEO 尚無結算，六位研究員已到期 ' +
+    D.analysts.reduce((a,x)=>a+(x.claims_scored||0),0) + ' 條';
+$('vp').innerHTML = ns
+  ? `命中 ${pc(ceo.fwd_hit)}，Brier ${ceo.brier!=null?ceo.brier.toFixed(3):'—'}。` +
+    (ceo.brier>0.25 ? `<b>Brier 高於 0.250 代表我的機率比「固定喊 50%」還差</b>——` +
+      `方向猜對不等於機率給得對，這一頁存在的意義就是不讓前者蓋住後者。` : ``)
+  : `我的第一批判斷還沒到期。這一頁目前對我而言只是承諾書。`;
+
+$('ceoSettled').innerHTML = ns ? '<div class="scroll"><table>' +
+  `<thead><tr><th>到期日</th><th>標的</th><th>期限</th><th>我說</th><th class="n">P(up)</th>
+   <th class="n">當時</th><th class="n">到期</th><th class="n">報酬</th>
+   <th>方向</th><th class="n">Brier</th></tr></thead><tbody>` +
+  D.ceo_settled.map(r=>`<tr><td class="faint">${r.resolve_at}</td>
+    <td class="dim">${esc(r.asset)}</td><td class="dim">${HL[r.horizon]||r.horizon}</td>
+    <td class="${r.stance==='up'?'up':r.stance==='down'?'down':'dim'}">${
+      r.stance==='up'?'看多':r.stance==='down'?'看空':'區間'}</td>
+    <td class="n">${(r.prob_up*100).toFixed(0)}%</td>
+    <td class="n faint">${num(r.p0)}</td><td class="n faint">${num(r.p1)}</td>
+    <td class="n">${sg(r.ret)}</td>
+    <td>${r.hit?'<span class="up">✓</span>':'<span class="down">✗</span>'}</td>
+    <td class="n ${r.brier>0.25?'down':'up'}">${r.brier!=null?r.brier.toFixed(3):'—'}</td></tr>`
+  ).join('') + '</tbody></table></div>'
+  : `<p class="lead">尚無到期判斷。到期時程：` +
+    (D.ceo_pending||[]).map(x=>`${x[0]} ×${x[1]}`).join('、') + `。</p>`;
+
+$('ceoAct').innerHTML = `<h4><span>下一期我自己要改的</span></h4><ul>` +
+  (ceo.actions||[]).map(a=>`<li><span class="tag">${esc(a.k)}</span>${md(a.t)}</li>`).join('')
+  + '</ul>';
+
+$('acts').innerHTML = (D.analysts||[]).map(p=>{
+  const v = p.vs_blind ?? '樣本不足';
+  return `<div class="act"><h4><span>${esc(p.name)}</span>
+    <span class="meta">已到期 ${p.claims_scored||0}　命中 ${pc(p.fwd_hit)}　${esc(v)}</span></h4>
+    <ul>` + (p.actions||[]).map(a=>
+      `<li><span class="tag">${esc(a.k)}</span>${md(a.t)}</li>`).join('') + `</ul></div>`;
+}).join('');
+
+$('recent').innerHTML =
+  `<thead><tr><th>到期日</th><th>研究員</th><th>標的</th><th>期限</th><th>方向</th>
+   <th class="n">當時</th><th class="n">到期</th><th class="n">報酬</th><th>方向</th>
+   <th>觸及</th><th class="n">最大逆向</th></tr></thead><tbody>` +
+  (D.recent||[]).map(r=>`<tr><td class="faint">${r.resolve_at}</td>
+    <td class="who">${esc(r.name)}</td><td class="dim">${esc(r.asset)}</td>
+    <td class="dim">${HL[r.horizon]||r.horizon}</td>
+    <td class="${r.direction==='up'?'up':r.direction==='down'?'down':'dim'}">${esc(r.direction)}</td>
+    <td class="n faint">${num(r.p0)}</td><td class="n faint">${num(r.p1)}</td>
+    <td class="n">${sg(r.ret)}</td>
+    <td>${r.hit?'<span class="up">✓</span>':'<span class="down">✗</span>'}</td>
+    <td>${r.tgt==null?'<span class="faint">—</span>':r.tgt?'<span class="up">✓</span>':'<span class="down">✗</span>'}</td>
+    <td class="n">${sg(r.mae)}</td></tr>`).join('') + '</tbody>';
+
+$('foot').innerHTML =
+  `<b>怎麼讀這一頁：</b>「命中」只問方向對錯，門檻是 ±3%。一天期限的「區間」` +
+  `本來就有八成機率會中，所以在那一格拿高命中率不是能力的證據——` +
+  `每個指標旁邊的<b>盲猜期望</b>才是該比的對象。<br><br>` +
+  `<b>最大逆向</b>是期間內最深的反向幅度。方向最後對了、中途卻逆向超過一成的判斷，` +
+  `實務上多半已經被洗掉，不該跟一路順風的同分。`;
+</script>
